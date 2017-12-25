@@ -12,57 +12,87 @@
 
 #include "get_next_line.h"
 
-static void		to_end(char *buf, int i, char **line)
+static void		to_end(char *buff, int i, char **line)
 {
-	buf[i - 1] = 0;
+	buff[i] = '\0';
 	*line = ft_memalloc(i);
-	ft_memcpy(*line, buf, i);
-	free(buf);
+	ft_memcpy(*line, buff, i);
+	free(buff);
 }
-
-// void	check_buff_size(char **buf, int i)
-// {
-// 	char	*tmp;
-// 	static int		k;
-
-// 	k = 1;
-// 	if (i == BUF_SIZE * k)
-// 	{
-// 		k *= 2;
-// 		tmp = ft_memalloc(BUF_SIZE * k);
-// 		ft_memcpy(tmp, buf, i);
-// 		free(buf);
-// 		buf = &tmp;
-// 	}
-// }
 
 int		get_next_line(const int fd, char **line)
 {
-	int		i;
-	int		ret;
-	int		k;
-	char	*buf;
-	char	*tmp;
+	static	char	buff[BUFF_SIZE + 1] = {'\0'};
+			char	*p_buff;
+			char	*res;
+			char	*tmp;
+			int		read_res;
+			int		i;
+			int		j;
+			int		k;
 
-	i = 0;
+	res = ft_memalloc(BUFF_SIZE);
+	read_res = 0;
+	j = 0;
 	k = 1;
-	buf = ft_memalloc(BUFF_SIZE);
-	ret = 0;
-	while (buf[i - 1] != '\n' && ret == 0)
+	i = 0;
+	p_buff = buff;
+	// if (buff[0] != '\0')
+	// {
+	// 	while (buff[i] != '\n' && buff[i] != '\0')
+	// 	{
+	// 		res[i + j] = buff[i];
+	// 		i++;
+	// 	}
+	// 	if (buff[i] == '\n' || buff[i] == EOF)
+	// 	{
+	// 		printf("check\n");
+	// 		to_end(res, i + j, line);
+	// 		p_buff = ft_strcpy(buff, &buff[i]);
+	// 		printf("strcpy = %s\n", buff);
+	// 		return (1);
+	// 	}
+	// 	if (i + j == BUFF_SIZE * k)
+	// 	{
+	// 		k *= 2;
+	// 		tmp = ft_memalloc(BUFF_SIZE * k);
+	// 		ft_memcpy(tmp, res, i + j);
+	// 		free(res);
+	// 		res = tmp;
+	// 		j += BUFF_SIZE;
+	// 	}
+	// }
+	while ((read_res = read(fd, buff, BUFF_SIZE)))
 	{
-		// check_buff_size(*buf, i);
-		if (i == BUFF_SIZE * k)
+		if (read_res == -1)
+			return (-1);
+		buff[read_res] = '\0';
+		i = 0;
+		while (buff[i] != '\n' && buff[i] != '\0')
+		{
+			res[i + j] = buff[i];
+			i++;
+		}
+		printf("i = %i\n", i);
+		printf("buff = %s\n", buff);
+		printf("res = %s\n", res);
+		if (buff[i] == '\n' || (buff[i] == '\0' && i != BUFF_SIZE))
+		{
+			printf("check\n");
+			to_end(res, i + j, line);
+			p_buff = ft_strcpy(buff, &buff[i]);
+			printf("strcpy = %s\n", buff);
+			return (1);
+		}
+		if (i + j == BUFF_SIZE * k)
 		{
 			k *= 2;
 			tmp = ft_memalloc(BUFF_SIZE * k);
-			ft_memcpy(tmp, buf, i);
-			free(buf);
-			buf = tmp;
+			ft_memcpy(tmp, res, i + j);
+			free(res);
+			res = tmp;
+			j += BUFF_SIZE;
 		}
-		ret = read(fd, &buf[i++], 1);
-		// printf("%i\n", ret);
 	}
-	printf("%i\n", ret);
-	to_end(buf, i, line);
-	return (ret);
+	return (0);
 }

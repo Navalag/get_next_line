@@ -26,12 +26,13 @@ int		main(int argc, char **argv)
 	if ((fd = open(argv[1], O_RDONLY, 0)) == -1)
 		return (0);
 	i = 0;
-	while (get_next_line(fd, &str) == 0)
+	while (i < 5)
 	{
-		printf("fd - %i\n", fd);
+		get_next_line(fd, &str);
+		// printf("fd - %i\n", fd);
 		printf("%s\n", str);
 		i++;
 	}
-	system("leaks get_next_line");
+	// system("leaks get_next_line");
 	return (0);
 }
