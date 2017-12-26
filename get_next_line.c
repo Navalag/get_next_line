@@ -37,31 +37,6 @@ int		get_next_line(const int fd, char **line)
 	k = 1;
 	i = 0;
 	p_buff = buff;
-	// if (buff[0] != '\0')
-	// {
-	// 	while (buff[i] != '\n' && buff[i] != '\0')
-	// 	{
-	// 		res[i + j] = buff[i];
-	// 		i++;
-	// 	}
-	// 	if (buff[i] == '\n' || buff[i] == EOF)
-	// 	{
-	// 		printf("check\n");
-	// 		to_end(res, i + j, line);
-	// 		p_buff = ft_strcpy(buff, &buff[i]);
-	// 		printf("strcpy = %s\n", buff);
-	// 		return (1);
-	// 	}
-	// 	if (i + j == BUFF_SIZE * k)
-	// 	{
-	// 		k *= 2;
-	// 		tmp = ft_memalloc(BUFF_SIZE * k);
-	// 		ft_memcpy(tmp, res, i + j);
-	// 		free(res);
-	// 		res = tmp;
-	// 		j += BUFF_SIZE;
-	// 	}
-	// }
 	while ((read_res = read(fd, buff, BUFF_SIZE)))
 	{
 		if (read_res == -1)
