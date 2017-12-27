@@ -15,6 +15,7 @@
 int		main(int argc, char **argv)
 {
 	int		fd;
+	int		res;
 	char	*str;
 	int		i;
 
@@ -26,13 +27,13 @@ int		main(int argc, char **argv)
 	if ((fd = open(argv[1], O_RDONLY, 0)) == -1)
 		return (0);
 	i = 0;
-	while (i < 5)
+	while ((res = get_next_line(fd, &str)) > 0 && i < 6)
 	{
-		get_next_line(fd, &str);
-		// printf("fd - %i\n", fd);
+		// printf("%i\n", res);
 		printf("%s\n", str);
 		i++;
 	}
+	// printf("%i\n", res);
 	// system("leaks get_next_line");
 	return (0);
 }

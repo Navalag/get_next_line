@@ -12,7 +12,7 @@
 
 NAME = get_next_line
 
-FLAGS = -Wall -Wextra -Werror -I. -c
+FLAGS = -Wall -Wextra -Werror
 
 SRCS = 	main.c\
 		get_next_line.c\
@@ -28,14 +28,13 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	make -C ~/projects/get_next_line/test_folder/libft
-	gcc $(FLAGS) $(SRCS) $(HEADER)
-	gcc $(OBJS) -o $(NAME) -I $(L_DIR) -L $(L_DIR) -lft
+	gcc $(FLAGS) -o $(NAME) $(OBJS) -I $(L_DIR) -L $(L_DIR) -lft
 
 %.o: %.c
-	gcc $(FLAGS) $<
+	gcc $(FLAGS) -c $<
 
 clean:
-	-rm -f $(OBJS) *.gch
+	-rm -f $(OBJS)
 
 fclean: clean
 	-rm -f $(NAME)
