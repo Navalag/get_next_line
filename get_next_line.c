@@ -6,13 +6,13 @@
 /*   By: agalavan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/27 14:09:31 by agalavan          #+#    #+#             */
-/*   Updated: 2017/12/27 14:09:34 by agalavan         ###   ########.fr       */
+/*   Updated: 2017/12/28 10:37:50 by agalavan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int		check_result(char **res, char **line)
+static int		check_result(char **res, char **line)
 {
 	char	*tmp;
 	int		lenght;
@@ -31,12 +31,11 @@ int		check_result(char **res, char **line)
 	return (0);
 }
 
-int		read_from_fd(int fd, char **res, char **line)
+static int		read_from_fd(int fd, char **res, char **line)
 {
 	char	buff[BUFF_SIZE + 1];
 	char	*tmp;
 	int		read_bytes;
-	// char	*sys_tmp;
 
 	read_bytes = 0;
 	while ((read_bytes = read(fd, buff, BUFF_SIZE)))
@@ -58,22 +57,24 @@ int		read_from_fd(int fd, char **res, char **line)
 	return (0);
 }
 
-int		get_next_line(const int fd, char **line)
+int				get_next_line(const int fd, char **line)
 {
-	static	char	*res = NULL;
-			int		ret_val;
+	static	char	*res[FD_AMOUNT];
+	int				ret_val;
 
-	if (res == NULL)
-		ret_val = read_from_fd(fd, &res, line);
-	else if (check_result(&res, line) == 1)
+	if (fd < 0 || fd >= 1024)
+		return (-1);
+	if (!res[fd])
+		ret_val = read_from_fd(fd, &res[fd], line);
+	else if (check_result(&res[fd], line) == 1)
 		return (1);
 	else
-		ret_val = read_from_fd(fd, &res, line);
-	if (ret_val == 0 && res != NULL && *res != '\0')
+		ret_val = read_from_fd(fd, &res[fd], line);
+	if (ret_val == 0 && res[fd] != NULL && *res[fd] != '\0')
 	{
-		*line = ft_strdup(res);
-		free(res);
-		res = NULL;
+		*line = ft_strdup(res[fd]);
+		free(res[fd]);
+		res[fd] = NULL;
 		return (1);
 	}
 	return (ret_val);
