@@ -62,7 +62,7 @@ int				get_next_line(const int fd, char **line)
 	static	char	*res[FD_AMOUNT];
 	int				ret_val;
 
-	if (fd < 0 || fd >= 1024)
+	if (fd < 0 || fd >= 1024 || line == NULL)
 		return (-1);
 	if (!res[fd])
 		ret_val = read_from_fd(fd, &res[fd], line);
