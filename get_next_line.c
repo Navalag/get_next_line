@@ -14,24 +14,21 @@
 
 static int		check_result(char **res, char **line)
 {
-	char	*tmp;
-	int		lenght;
-	int		i;
+	char		*tmp;
 
-	i = 0;
 	if ((tmp = ft_strchr(*res, '\n')) != 0)
 	{
-		lenght = tmp - *res;
-		*line = ft_strsub(*res, 0, lenght);
-		tmp = *res;
-		*res = ft_strsub(tmp, lenght + 1, ft_strlen(tmp) - lenght);
-		free(tmp);
+		*tmp = 0;
+		*line = ft_strdup(*res);
+		tmp = ft_strdup(tmp + 1);
+		free(*res);
+		*res = tmp;
 		return (1);
 	}
 	return (0);
 }
 
-static int		read_from_fd(int fd, char **res, char **line)
+static int		read_from_fd(const int fd, char **res, char **line)
 {
 	char	buff[BUFF_SIZE + 1];
 	char	*tmp;
@@ -57,13 +54,34 @@ static int		read_from_fd(int fd, char **res, char **line)
 	return (0);
 }
 
+/*
+** Below function is main for this project.
+**
+** First - check errors.
+** Then initialize line with NULL. When file is empty and GNL return 0
+** line will contain NULL.
+**
+** After that check 4 different cases:
+** -if res is empty (usually first call of GNL with given fd).
+** In this case - call to read_from_fd().
+** -if res is not empty. Call check_result() and check if
+** there is a full line (end with \n). If yes - add this full line to result.
+** -else read from buffer until find \n.
+** -if this is last line in a file and it does not finish with \n
+** copy res to line.
+**
+** GNL return 1 when line was readed, 0 when file is finished
+** and -1 in case of error.
+*/
+
 int				get_next_line(const int fd, char **line)
 {
 	static	char	*res[FD_AMOUNT];
 	int				ret_val;
 
-	if (fd < 0 || fd >= 1024 || line == NULL)
+	if (fd < 0 || line == NULL || (read(fd, 0, 0) < 0))
 		return (-1);
+	*line = NULL;
 	if (!res[fd])
 		ret_val = read_from_fd(fd, &res[fd], line);
 	else if (check_result(&res[fd], line) == 1)
