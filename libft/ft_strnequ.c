@@ -1,39 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strnequ.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: agalavan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/12/20 13:13:44 by agalavan          #+#    #+#             */
-/*   Updated: 2017/12/20 13:13:46 by agalavan         ###   ########.fr       */
+/*   Created: 2017/11/09 17:01:26 by agalavan          #+#    #+#             */
+/*   Updated: 2017/11/09 17:01:28 by agalavan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "libft.h"
+#include <string.h>
 
-int		main(int argc, char **argv)
+int		ft_strnequ(char const *s1, char const *s2, size_t n)
 {
-	int		fd;
-	int		res;
-	char	*str;
-	int		i;
+	size_t	i;
 
-	if (argc != 2)
-	{
-		printf("usage: ./get_next_line source_file\n");
-		return (0);
-	}
-	if ((fd = open(argv[1], O_RDONLY, 0)) == -1)
-		return (0);
 	i = 0;
-	while ((res = get_next_line(fd, &str)) > 0 && i < 6)
+	if (s1 == NULL || s2 == NULL)
+		return (0);
+	while ((s1[i] != '\0' || s2[i] != '\0') && n > i)
 	{
-		// printf("%i\n", res);
-		printf("%s\n", str);
+		if (s1[i] != s2[i])
+			return (0);
 		i++;
 	}
-	// printf("%i\n", res);
-	// system("leaks get_next_line");
-	return (0);
+	return (1);
 }
